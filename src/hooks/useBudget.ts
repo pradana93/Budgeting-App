@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { budgetService } from '@/services/api';
 import { useAppStore } from '@/store/appStore';
@@ -44,11 +45,10 @@ export const useCreateBudget = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: budgetService.createBudget,
-    onSuccess: (budget) => {
+    mutationFn: ({ providerId, amount, frequency, categories }: { providerId: string; amount: number; frequency: 'weekly' | 'biweekly' | 'monthly'; categories: any[] }) =>
+      budgetService.createBudget(providerId, amount, frequency, categories),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['budget'] });
     },
   });
 };
-
-import React from 'react';
