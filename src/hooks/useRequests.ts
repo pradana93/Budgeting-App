@@ -76,8 +76,7 @@ export const useCreateRequest = () => {
   const { addRequest } = useAppStore();
 
   return useMutation({
-    mutationFn: ({ receiverId, budgetId, categoryId, amount, description, photoUrl }: { receiverId: string; budgetId: string; categoryId: string; amount: number; description: string; photoUrl?: string }) =>
-      requestService.createRequest(receiverId, budgetId, categoryId, amount, description, photoUrl),
+    mutationFn: requestService.createRequest,
     onSuccess: (request) => {
       addRequest(request);
       queryClient.invalidateQueries({ queryKey: ['requests'] });

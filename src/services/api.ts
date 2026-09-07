@@ -1,7 +1,8 @@
 import { supabase } from './supabase';
 import { User, Budget, ReimbursementRequest, Category, Notification } from '@/types';
+import toast from 'react-hot-toast';
 
-// ...existing code...
+// Auth Service
 export const authService = {
   async signUp(email: string, password: string, name: string) {
     const { data, error } = await supabase.auth.signUp({
@@ -184,19 +185,12 @@ export const budgetService = {
   },
 
   async updateBudgetSpent(budgetId: string, amount: number) {
-    const { data: budget } = await supabase
-      .from('budgets')
-      .select('*')
-      .eq('id', budgetId)
-      .single();
-    
-    if (!budget) throw new Error('Budget not found');
-    
-    const newSpent = (budget.spent || 0) + amount;
+    const { data: budget } = await budgetService.getBudget(budgetId);
+    const newSpent = (budget?.spent || 0) + amount;
 
     const { error } = await supabase
       .from('budgets')
-      .update({ spent: newSpent, remaining: budget.amount - newSpent })
+      .update({ spent: newSpent, remaining: budget!.amount - newSpent })
       .eq('id', budgetId);
 
     if (error) throw error;
